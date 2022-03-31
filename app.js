@@ -49,6 +49,9 @@ const vm = new Vue({
     fecharModal({ target, currentTarget }) {
       if (target === currentTarget) this.produto = false;
     },
+    clickForaCarrinho({ target, currentTarget }) {
+      if (target === currentTarget) this.carrinhoAtivo= false;
+    },
  
     adicionarItem() {
       this.produto.estoque--;
@@ -70,14 +73,26 @@ const vm = new Vue({
       setTimeout(() => {
         this.alertaAtivo = false;
       }, 1500);
+    },
+    router() {
+      const hash = document.location.hash;
+      if (hash)
+        this.fetchProduto(hash.replace("#", " "));
     }
-
   },
+  watch: {
+produto(){
+document.title = this.produto.nome || "Techno";
+const hash= this.produto.id || " ";
+history.pushState(null, null, `# ${hash}`);
+},
     carrinho() {
       window.localStorage.carrinho = JSON.stringify(this.carrinho);
-  },
+  }
+},
   created() {
     this.fetchProdutos();
     this.checarLocalStorage();
+    this.router();
   }
 })
